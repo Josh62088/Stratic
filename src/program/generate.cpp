@@ -34,6 +34,7 @@
 #include "strata/core/peer_experts.hpp"
 #include "strata/core/layer.hpp"
 #include "strata/core/layout.hpp"
+#include "strata/core/geometry_map.hpp"   // Stratic: the file describes its own geometry
 #include "strata/core/session.hpp"
 #include "strata/core/weights.hpp"
 #include "strata/kernels/cpu/expert.hpp"
@@ -2717,12 +2718,23 @@ int main(int argc, char** argv) {
             // is the authority on its own MoE shape - everything else in the geometry is unchanged
             try {
                 strata::GgufFile model_gguf(o.native_shards.front());   // the metadata shard
-                // Stratic: the prefix follows the file's own architecture, so a dense qwen35 model
-                // reads its own rope keys. A dense file has no expert_count/expert_used_count, so
-                // those two lookups simply miss and the geometry keeps its own value.
+                // Stratic: the file DESCRIBES its geometry instead of the engine compiling one model's in.
+                // A dense qwen35 model arrives with different widths, no routed experts, and no gated
+                // residual or QSA indexer; apply_arch_geometry() ZEROES the components its architecture
+                // lacks rather than leaving the 125B's values in place -- a model with no
+                // hyper-connection weights must not be run through the hyper-connection graph. A pruned
+                // MoE variant keeps working: its own file is still the authority on its expert shape.
+                strata::ArchGeometry arch;
+                std::string arch_err;
+                if (!strata::read_arch_geometry(model_gguf, arch, arch_err)) {
+                    std::fprintf(stderr, "strata generate: %s: %s\n", o.native_shards.front().c_str(),
+                                 arch_err.c_str());
+                    return 1;
+                }
+                strata::core::apply_arch_geometry(arch, g);
+                // one expert per token for a dense model: the router has a single choice
+                K = arch.dense() ? 1 : (arch.experts_used > 0 ? arch.experts_used : K);
                 const std::string ap = strata::arch_prefix(model_gguf);
-                if (const strata::MetaValue* v = model_gguf.get(ap + "expert_count")) g.n_expert = (int64_t) v->u;
-                if (const strata::MetaValue* v = model_gguf.get(ap + "expert_used_count")) K = (int64_t) v->u;
                 if (const strata::MetaValue* v = model_gguf.get(ap + "rope.freq_base")) gguf_rope_base = v->num();
                 if (const strata::MetaValue* v = model_gguf.get(ap + "rope.scaling.type")) gguf_rope_type = v->s;
                 if (const strata::MetaValue* v = model_gguf.get(ap + "rope.scaling.factor")) gguf_rope_factor = v->num();

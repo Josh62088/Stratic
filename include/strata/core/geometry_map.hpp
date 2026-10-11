@@ -38,12 +38,19 @@ inline void apply_arch_geometry(const strata::ArchGeometry& a, ModelGeometry& g)
     if (a.ssm_conv_channels) g.ssm_conv_channels = a.ssm_conv_channels;
     if (a.ssm_value_dim)     g.ssm_value_dim = a.ssm_value_dim;
 
-    if (a.n_ff > 0) g.n_ff = a.n_ff;
+    // `n_ff` is the DENSE feed-forward width. For a MoE model this field is the PER-EXPERT width,
+    // which the expert table's own blob geometry describes, so it is not taken from
+    // feed_forward_length there -- overwriting it would change the 125B's expert geometry.
+    if (a.n_ff > 0 && a.dense()) g.n_ff = a.n_ff;
 
     // A dense feed-forward is a one-expert mixture: the router has a single choice, softmax over
     // one logit is 1.0, and the expert path computes the FFN. The runtime already accepts this
     // (router_top10 has no lower bound on n_expert; prefill.cpp checks `n_expert < 1`).
-    g.n_expert = a.dense() ? 1 : a.n_expert;
+    // A dense feed-forward is a one-expert mixture. A MoE file declares its own count; only override
+    // when the file actually spoke, so a MoE file that omitted the key keeps the compiled-in shape
+    // instead of silently becoming dense.
+    if (a.dense()) g.n_expert = 1;
+    else if (a.n_expert > 0) g.n_expert = a.n_expert;
 
     // absent components are zeroed, not inherited
     if (!a.has_gated_residual) { g.hc = 0; g.hc_lr = 0; }

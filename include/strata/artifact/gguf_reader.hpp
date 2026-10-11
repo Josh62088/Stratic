@@ -681,7 +681,7 @@ struct ArchGeometry {
     int64_t ssm_state_size = 0, ssm_k_heads = 0, ssm_v_heads = 0, ssm_d_conv = 0,
             ssm_conv_channels = 0, ssm_value_dim = 0;
 
-    int64_t n_ff = 0, n_expert = 0;
+    int64_t n_ff = 0, n_expert = 0, experts_used = 0;
 
     int64_t rope_dims = 0;       // rope.dimension_count (the rotated part of head_dim)
 
@@ -734,6 +734,7 @@ inline bool read_arch_geometry(const GgufFile& g, ArchGeometry& o, std::string& 
     opt_u("ssm.conv_kernel", o.ssm_d_conv);
     opt_u("ssm.inner_size", o.ssm_value_dim);
     opt_u("expert_count", o.n_expert);           // absent on a dense model -> stays 0
+    opt_u("expert_used_count", o.experts_used);
     opt_u("rope.dimension_count", o.rope_dims);
     o.has_gated_residual = spec->gated_residual;
     o.has_sparse_indexer = spec->sparse_indexer;
