@@ -93,7 +93,11 @@ void q2_rows_any_legacy(const uint8_t* w, size_t row_bytes, int nblocks, const A
 const ExpertLayout& expert_layout();
 /// Reads `<pack_dir>/native_experts.txt` when it exists (a native pack), else sets the canonical layout.
 /// Versions up to kExpertLayoutVersion are read; a newer one is refused (a newer packer wrote it).
-bool expert_layout_load(const std::string& pack_dir, int64_t n_layers, int64_t n_expert, std::string& err);
+/// `n_embd` and `n_ff` are the MODEL's widths: the table's blobs are validated against them, and they
+/// were previously the compiled-in 125B constants (kernels/cpu/expert.hpp).  Passing the model's own
+/// numbers is what lets a second architecture's pack load at all.
+bool expert_layout_load(const std::string& pack_dir, int64_t n_layers, int64_t n_expert, int64_t n_embd,
+                        int64_t n_ff, std::string& err);
 /// The newest native_experts.txt this engine reads.  v4 = v3 plus the per-role shard column `gate,up,down`,
 /// written only when some layer's roles are in different shards (every other pack stays v3, byte for byte).
 inline constexpr int kExpertLayoutVersion = 4;

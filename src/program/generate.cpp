@@ -2628,8 +2628,22 @@ int main(int argc, char** argv) {
     // every quantized tensor in its GGUF form, so it needs --native (the dense projections, head and embedding
     // come from the model file) and runs its experts in verify windows only (--spec).
     {
-        const strata::core::ModelGeometry g0;
-        if (!strata::kernels::cpu::expert_layout_load(o.pack, g0.n_layers, g0.n_expert, err)) {
+        // Stratic: the table is validated against the MODEL's geometry, so it must be derived from the
+        // model file rather than left at the compiled-in defaults.  `g` proper is not built until further
+        // down (it resolves rope config first), so the arch geometry is read here and applied to a local.
+        // Without --native there is no model file to read and the defaults stand, exactly as before.
+        strata::core::ModelGeometry g0;
+        if (!o.native_preset.empty() && !o.native_shards.empty()) {
+            try {
+                strata::GgufFile layout_gguf(o.native_shards.front());
+                strata::ArchGeometry arch;
+                std::string aerr;
+                if (strata::read_arch_geometry(layout_gguf, arch, aerr)) strata::core::apply_arch_geometry(arch, g0);
+            } catch (const std::exception&) {
+                // an unreadable metadata shard is reported properly further down; keep the defaults here
+            }
+        }
+        if (!strata::kernels::cpu::expert_layout_load(o.pack, g0.n_layers, g0.n_expert, g0.n_embd, g0.n_ff, err)) {
             std::fprintf(stderr, "strata generate: %s\n", err.c_str());
             return 1;
         }
