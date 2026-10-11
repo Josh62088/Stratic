@@ -220,7 +220,12 @@ def tensor_bytes(mm, g, t) -> np.ndarray:
 
 
 def is_expert(name: str) -> bool:
-    return name.startswith("blk.") and name.endswith(("_exps.weight",))
+    # `_exps.weight` is the MoE model's routed experts.  A DENSE model has no such tensor: its
+    # feed-forward is `blk.N.ffn_{gate,up,down}.weight`, which `expert_layout()` serves through the
+    # same one-expert table (see the DENSE MODEL branch there).  Those three names do not exist in
+    # the 125B -- its FFN is `_exps` plus `_shexp` -- so matching them here is safe.
+    return name.startswith("blk.") and name.endswith(("_exps.weight", "ffn_gate.weight",
+                                                      "ffn_up.weight", "ffn_down.weight"))
 
 
 def convert(name: str, type_name: str, raw: np.ndarray, compat_bf16: bool):
@@ -434,7 +439,44 @@ def expert_layout(model: Model, src: pathlib.Path):
     T = {n: w[1] for n, w in model.where.items()}
     exps = [n for n in T if n.startswith("blk.") and n.endswith("_exps.weight")]
     if not exps:
-        return "the model has no expert tensors (blk.N.ffn_{gate,up,down}_exps.weight)"
+        # DENSE MODEL (Stratic): no routed experts.  The feed-forward is a plain
+        # blk.N.ffn_{gate,up,down}.weight per layer, which `index_standalone()` already handles like any
+        # other quantized dense tensor: `is_expert()` matches only `*_exps.weight`, and `form_of()` does
+        # not claim these names, so they are SERVED NATIVELY from the GGUF.  A dense pack is therefore a
+        # thin index over the model file, not a second copy of its weights.
+        #
+        # The table is still written, empty, because native_experts.txt is the pack's COMPLETION MARKER
+        # (main writes it last, and a pack without it is unfinished).  n_expert is 1 rather than 0: a
+        # dense feed-forward is a one-expert mixture, the router has a single choice and softmax over one
+        # logit is 1.0, which is the shape the engine's expert path already accepts.
+        if not any(n.startswith("blk.") and n.endswith("ffn_gate.weight") for n in T):
+            return "the model has no expert tensors (blk.N.ffn_{gate,up,down}_exps.weight) and no " \
+                   "dense feed-forward (blk.N.ffn_gate.weight) either"
+        # One expert per layer, built from that layer's dense feed-forward.  The row format already
+        # carries three per-role offsets, so gate/up/down do NOT have to be contiguous with each
+        # other in the GGUF -- only each layer's blob start has to follow the previous layer's.
+        ffn = [n for n in T if n.startswith("blk.") and
+               n.endswith(("ffn_gate.weight", "ffn_up.weight", "ffn_down.weight"))]
+        n_layers = 1 + max(int(n.split(".")[1]) for n in ffn)
+        layout, lines, offset = [], [], 0
+        for l in range(n_layers):
+            names = ["blk.%d.ffn_%s.weight" % (l, r) for r in ("gate", "up", "down")]
+            if any(n not in T for n in names):
+                return "layer %d: missing %s" % (l, ", ".join(n for n in names if n not in T))
+            ts = [T[n] for n in names]
+            if any(t.expected_bytes() is None for t in ts):
+                return "layer %d: a dense feed-forward tensor has no whole-block byte count" % l
+            per = [t.expected_bytes() for t in ts]
+            blob = sum(per)
+            layout.append((l, ts[0].type_id, ts[2].type_id, offset, blob, ts))
+            ws = [model.where[n] for n in names]
+            line = "%d %d %d %d %d %d %d %d" % (l, ts[0].type_id, ts[2].type_id, offset, blob,
+                                                *[w[0].data_start + w[1].offset for w in ws])
+            lines.append(line)
+            offset += blob                       # ONE expert: no * n_expert
+        head = ("# strata native experts v3: layer gu_type d_type offset blob_bytes gate_off up_off down_off "
+                "[shard] (n_expert 1, total %d; DENSE model: the feed-forward is the single expert)\n" % offset)
+        return layout, head + "".join(line + "\n" for line in lines), 1, offset
     n_layers = 1 + max(int(n.split(".")[1]) for n in exps)
     n_expert = int(T["blk.0.ffn_gate_inp.weight"].shape[1])   # router rows = experts kept (pruned models ship < 512)
     if any(int(T["blk.%d.ffn_gate_inp.weight" % l].shape[1]) != n_expert for l in range(n_layers)):
