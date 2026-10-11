@@ -10,6 +10,7 @@ int main(int argc, char** argv) {
         return 2;
     }
     const bool check = (argc > 2 && std::string(argv[2]) == "--check");
+    const bool geometry = (argc > 2 && std::string(argv[2]) == "--geometry");
     try {
         strata::GgufFile g(argv[1]);
         std::printf("%s\n", argv[1]);
@@ -57,6 +58,31 @@ int main(int argc, char** argv) {
             const std::string err = strata::check_architecture(g);
             std::printf("  architecture guard: %s\n", err.empty() ? "PASS" : ("FAIL - " + err).c_str());
             if (bad) return 1;
+        }
+
+        if (geometry) {
+            strata::ArchGeometry a;
+            std::string gerr;
+            if (!strata::read_arch_geometry(g, a, gerr)) {
+                std::printf("  geometry: FAIL - %s\n", gerr.c_str());
+                return 1;
+            }
+            std::printf("  geometry (read from the file):\n");
+            std::printf("    block_count %lld   nextn %lld   ->  n_layers %lld\n",
+                        (long long) a.block_count, (long long) a.nextn, (long long) a.n_layers);
+            std::printf("    n_embd %lld   qsa_interval %lld\n", (long long) a.n_embd, (long long) a.qsa_interval);
+            std::printf("    attention: n_head %lld  n_head_kv %lld  head_dim %lld\n",
+                        (long long) a.n_head, (long long) a.n_head_kv, (long long) a.head_dim);
+            std::printf("    GDN/SSM: state %lld  k_heads %lld  v_heads %lld  d_conv %lld  value_dim %lld  conv_channels %lld\n",
+                        (long long) a.ssm_state_size, (long long) a.ssm_k_heads, (long long) a.ssm_v_heads,
+                        (long long) a.ssm_d_conv, (long long) a.ssm_value_dim, (long long) a.ssm_conv_channels);
+            std::printf("    feed-forward: n_ff %lld   n_expert %lld  -> %s\n",
+                        (long long) a.n_ff, (long long) a.n_expert, a.dense() ? "DENSE" : "MoE");
+            std::printf("    optional: hc %lld  hc_lr %lld  idx_q_heads %lld  idx_key_dim %lld\n",
+                        (long long) a.hc, (long long) a.hc_lr, (long long) a.idx_q_heads, (long long) a.idx_key_dim);
+            std::printf("    derived layer types: %lld full-attention + %lld GDN  (sum %lld)\n",
+                        (long long) a.n_qsa_layers(), (long long) a.n_gdn_layers(),
+                        (long long) (a.n_qsa_layers() + a.n_gdn_layers()));
         }
         return 0;
     } catch (const std::exception& e) {

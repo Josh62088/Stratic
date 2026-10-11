@@ -656,4 +656,79 @@ inline std::string check_architecture(const GgufFile& g, const Qwen4ExpGuard& wa
     return {}; // empty == ok
 }
 
+// ---- raw per-architecture geometry, read from the file's own arch-prefixed keys.
+//
+// Stratic: the engine's ModelGeometry was compiled in for one model. This reads the same numbers
+// from any file the guard accepts, so a second architecture can be DESCRIBED rather than hardcoded.
+// A field a family does not have stays 0 (gated residual, the QSA indexer, routed experts) and the
+// caller must treat 0 as "absent" rather than as a value.
+struct ArchGeometry {
+    int64_t block_count = 0;     ///< the file's own layer count, MTP block included
+    int64_t nextn = 0;           ///< nextn_predict_layers: the MTP draft block
+    int64_t n_layers = 0;        ///< FULL stack layers = block_count - nextn
+    int64_t n_embd = 0;
+    int64_t qsa_interval = 0;    ///< full_attention_interval
+
+    int64_t n_head = 0, n_head_kv = 0, head_dim = 0;
+
+    int64_t ssm_state_size = 0, ssm_k_heads = 0, ssm_v_heads = 0, ssm_d_conv = 0,
+            ssm_conv_channels = 0, ssm_value_dim = 0;
+
+    int64_t n_ff = 0, n_expert = 0;
+
+    // optional families; 0 == this model does not have it
+    int64_t hc = 0, hc_lr = 0, idx_q_heads = 0, idx_key_dim = 0;
+
+    bool dense() const { return n_expert <= 1; }
+    /// Same rule as is_qsa_layer(): `layer % qsa_interval == qsa_interval - 1` is full attention.
+    int64_t n_qsa_layers() const { return qsa_interval > 0 ? n_layers / qsa_interval : 0; }
+    int64_t n_gdn_layers() const { return n_layers - n_qsa_layers(); }
+};
+
+/// Read the arch-prefixed geometry keys.  Requires only the keys every accepted family has; the
+/// rest are optional and left at 0 when absent.  `n_layers` is derived, because the MTP/nextn
+/// block carries its own attention and feed-forward tensors and must not be counted as a stack
+/// layer - doing so makes `n_layers / qsa_interval` wrong by one.
+inline bool read_arch_geometry(const GgufFile& g, ArchGeometry& o, std::string& err) {
+    const MetaValue* arch = g.get("general.architecture");
+    if (!arch) { err = "missing general.architecture"; return false; }
+    const ArchSpec* spec = arch_spec(arch->s);
+    if (!spec) { err = "architecture is '" + arch->s + "', this engine requires 'qwen4exp' or 'qwen35'"; return false; }
+    const std::string p = std::string(spec->name) + ".";
+
+    const auto need_u = [&](const char* suf, int64_t& dst) -> bool {
+        const MetaValue* v = g.get(p + suf);
+        if (!v || !v->is_num()) { err = "missing " + p + suf; return false; }
+        dst = (int64_t) v->u;
+        return true;
+    };
+    const auto opt_u = [&](const char* suf, int64_t& dst) {
+        if (const MetaValue* v = g.get(p + suf)) if (v->is_num()) dst = (int64_t) v->u;
+    };
+
+    if (!need_u("block_count", o.block_count)) return false;
+    if (!need_u("embedding_length", o.n_embd)) return false;
+    if (!need_u("attention.head_count", o.n_head)) return false;
+    if (!need_u("attention.head_count_kv", o.n_head_kv)) return false;
+
+    opt_u("nextn_predict_layers", o.nextn);
+    opt_u("full_attention_interval", o.qsa_interval);
+    opt_u("attention.key_length", o.head_dim);
+    opt_u("feed_forward_length", o.n_ff);
+    opt_u("ssm.state_size", o.ssm_state_size);
+    opt_u("ssm.group_count", o.ssm_k_heads);
+    opt_u("ssm.time_step_rank", o.ssm_v_heads);
+    opt_u("ssm.conv_kernel", o.ssm_d_conv);
+    opt_u("ssm.inner_size", o.ssm_value_dim);
+    opt_u("expert_count", o.n_expert);           // absent on a dense model -> stays 0
+
+    o.n_layers = o.block_count - o.nextn;
+    if (o.n_layers <= 0) { err = "block_count (" + std::to_string(o.block_count) + ") - nextn_predict_layers (" +
+                                 std::to_string(o.nextn) + ") is not a positive layer count"; return false; }
+    // the GDN conv width is a function of the other SSM numbers, as in the compiled-in defaults
+    if (o.ssm_conv_channels == 0 && o.ssm_state_size && o.ssm_k_heads && o.ssm_value_dim)
+        o.ssm_conv_channels = 2 * o.ssm_state_size * o.ssm_k_heads + o.ssm_value_dim;
+    return true;
+}
+
 } // namespace strata
