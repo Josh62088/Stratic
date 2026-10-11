@@ -577,35 +577,81 @@ private:
     std::map<std::string, std::pair<size_t, const TensorInfo*>> index_;
 };
 
-// ---- architecture guard (P1.S2). The engine is specialised to ONE model; anything else must be
-// refused with a precise error rather than silently mis-run.
+// ---- architecture guard (P1.S2). The engine is specialised to a small family of models; anything
+// else must be refused with a precise error rather than silently mis-run.
+//
+// Stratic: the guard is per-architecture instead of pinned to one metadata prefix.
+//   "qwen4exp" = Qwen3.8-Flash-Next, 125B MoE, 48 layers, 512 routed experts.
+//   "qwen35"   = Qwen3.8-27B, dense, 65 layers (48 Gated DeltaNet + 17 full attention), MTP head.
+// A dense architecture carries no expert_count / expert_used_count keys, so those two requirements
+// are skipped for it; everything else is validated the same way for both.
+struct ArchSpec {
+    const char* name;        // the GGUF metadata prefix
+    uint32_t block_count;
+    uint32_t hidden;
+    uint32_t head_count;
+    uint32_t head_count_kv;
+    bool     moe;            // false: no routed experts (dense feed-forward)
+};
+
+inline const ArchSpec* arch_spec(const std::string& name) {
+    static const ArchSpec specs[] = {
+        {"qwen4exp", 48, 2560, 24, 2, true},
+        {"qwen35",   65, 5120, 24, 4, false},
+    };
+    for (const ArchSpec& s : specs)
+        if (name == s.name) return &s;
+    return nullptr;
+}
+
+// The metadata prefix of a model file, including the trailing dot ("qwen4exp." / "qwen35."), or ""
+// when the file declares an architecture this engine does not know. Callers use it to read
+// arch-prefixed keys without hardcoding one family.
+inline std::string arch_prefix(const GgufFile& g) {
+    const MetaValue* arch = g.get("general.architecture");
+    if (!arch || arch_spec(arch->s) == nullptr) return {};
+    return arch->s + ".";
+}
+
 struct Qwen4ExpGuard {
-    uint32_t block_count = 48, hidden = 2560, experts = 0, experts_used = 0, head_count = 24,
-             head_count_kv = 2;   // 0 = presence-only: pruned variants (GSQ-RCO Coder) legitimately ship
-                                  // fewer experts than the canonical 512; the graph reads the true value
+    uint32_t block_count = 0, hidden = 0, experts = 0, experts_used = 0, head_count = 0,
+             head_count_kv = 0;   // 0 = take the architecture's own constant (ArchSpec). A non-zero
+                                  // value pins one. experts == 0 stays presence-only: pruned variants
+                                  // (GSQ-RCO Coder) legitimately ship fewer experts than the canonical
+                                  // 512, and the graph reads the true value from the file.
 };
 
 inline std::string check_architecture(const GgufFile& g, const Qwen4ExpGuard& want = {}) {
     const MetaValue* arch = g.get("general.architecture");
     if (!arch) return "missing general.architecture";
-    if (arch->s != "qwen4exp") return "architecture is '" + arch->s + "', this engine requires 'qwen4exp'";
+    const ArchSpec* spec = arch_spec(arch->s);
+    if (!spec) return "architecture is '" + arch->s + "', this engine requires 'qwen4exp' or 'qwen35'";
+
+    const uint32_t block_count   = want.block_count   ? want.block_count   : spec->block_count;
+    const uint32_t hidden        = want.hidden        ? want.hidden        : spec->hidden;
+    const uint32_t head_count    = want.head_count    ? want.head_count    : spec->head_count;
+    const uint32_t head_count_kv = want.head_count_kv ? want.head_count_kv : spec->head_count_kv;
+
+    const std::string p = std::string(spec->name) + ".";
     struct Req {
-        const char* key;
+        std::string key;
         uint64_t want;
     };
-    const Req reqs[] = {
-        {"qwen4exp.block_count", want.block_count},
-        {"qwen4exp.embedding_length", want.hidden},
-        {"qwen4exp.expert_count", want.experts},
-        {"qwen4exp.expert_used_count", want.experts_used},
-        {"qwen4exp.attention.head_count", want.head_count},
-        {"qwen4exp.attention.head_count_kv", want.head_count_kv},
+    std::vector<Req> reqs = {
+        {p + "block_count", block_count},
+        {p + "embedding_length", hidden},
+        {p + "attention.head_count", head_count},
+        {p + "attention.head_count_kv", head_count_kv},
     };
+    if (spec->moe) {
+        reqs.push_back({p + "expert_count", want.experts});
+        reqs.push_back({p + "expert_used_count", want.experts_used});
+    }
     for (const auto& r : reqs) {
         const MetaValue* v = g.get(r.key);
         if (!v) return std::string("missing ") + r.key;
         if (r.want && v->u != r.want)
-            return std::string(r.key) + " = " + std::to_string(v->u) + ", expected " + std::to_string(r.want);
+            return r.key + " = " + std::to_string(v->u) + ", expected " + std::to_string(r.want);
     }
     return {}; // empty == ok
 }

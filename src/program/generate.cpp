@@ -2717,12 +2717,16 @@ int main(int argc, char** argv) {
             // is the authority on its own MoE shape - everything else in the geometry is unchanged
             try {
                 strata::GgufFile model_gguf(o.native_shards.front());   // the metadata shard
-                if (const strata::MetaValue* v = model_gguf.get("qwen4exp.expert_count")) g.n_expert = (int64_t) v->u;
-                if (const strata::MetaValue* v = model_gguf.get("qwen4exp.expert_used_count")) K = (int64_t) v->u;
-                if (const strata::MetaValue* v = model_gguf.get("qwen4exp.rope.freq_base")) gguf_rope_base = v->num();
-                if (const strata::MetaValue* v = model_gguf.get("qwen4exp.rope.scaling.type")) gguf_rope_type = v->s;
-                if (const strata::MetaValue* v = model_gguf.get("qwen4exp.rope.scaling.factor")) gguf_rope_factor = v->num();
-                if (const strata::MetaValue* v = model_gguf.get("qwen4exp.rope.scaling.original_context_length"))
+                // Stratic: the prefix follows the file's own architecture, so a dense qwen35 model
+                // reads its own rope keys. A dense file has no expert_count/expert_used_count, so
+                // those two lookups simply miss and the geometry keeps its own value.
+                const std::string ap = strata::arch_prefix(model_gguf);
+                if (const strata::MetaValue* v = model_gguf.get(ap + "expert_count")) g.n_expert = (int64_t) v->u;
+                if (const strata::MetaValue* v = model_gguf.get(ap + "expert_used_count")) K = (int64_t) v->u;
+                if (const strata::MetaValue* v = model_gguf.get(ap + "rope.freq_base")) gguf_rope_base = v->num();
+                if (const strata::MetaValue* v = model_gguf.get(ap + "rope.scaling.type")) gguf_rope_type = v->s;
+                if (const strata::MetaValue* v = model_gguf.get(ap + "rope.scaling.factor")) gguf_rope_factor = v->num();
+                if (const strata::MetaValue* v = model_gguf.get(ap + "rope.scaling.original_context_length"))
                     gguf_rope_orig_ctx = v->num();
             } catch (const std::exception& e) {
                 std::fprintf(stderr, "strata generate: reading the model's expert shape from %s: %s\n",
