@@ -591,13 +591,20 @@ struct ArchSpec {
     uint32_t hidden;
     uint32_t head_count;
     uint32_t head_count_kv;
-    bool     moe;            // false: no routed experts (dense feed-forward)
+    // ---- capabilities. These exist because "the file does not declare this key" and "this family
+    // does not have this component" are DIFFERENT statements, and only the family knows which. A
+    // model without gated residual must not silently inherit the compiled-in hc = 4.
+    bool     moe;              // routed experts (a dense feed-forward has none)
+    bool     gated_residual;   // hyper-connections on every layer
+    bool     sparse_indexer;   // the QSA indexer selects cells; false: plain full attention
+    bool     ple;              // a per-layer n-gram (PLE) table
 };
 
 inline const ArchSpec* arch_spec(const std::string& name) {
     static const ArchSpec specs[] = {
-        {"qwen4exp", 48, 2560, 24, 2, true},
-        {"qwen35",   65, 5120, 24, 4, false},
+        //            name        blk  hid  nh nkv  moe    gr     idx    ple
+        {"qwen4exp",           48, 2560, 24,  2, true,  true,  true,  true},
+        {"qwen35",             65, 5120, 24,  4, false, false, false, false},
     };
     for (const ArchSpec& s : specs)
         if (name == s.name) return &s;
@@ -676,8 +683,14 @@ struct ArchGeometry {
 
     int64_t n_ff = 0, n_expert = 0;
 
+    int64_t rope_dims = 0;       // rope.dimension_count (the rotated part of head_dim)
+
     // optional families; 0 == this model does not have it
     int64_t hc = 0, hc_lr = 0, idx_q_heads = 0, idx_key_dim = 0;
+    int64_t idx_top_k = 0, idx_block = 0;
+
+    // capabilities, from the ArchSpec rather than from the file
+    bool has_gated_residual = false, has_sparse_indexer = false, has_ple = false;
 
     bool dense() const { return n_expert <= 1; }
     /// Same rule as is_qsa_layer(): `layer % qsa_interval == qsa_interval - 1` is full attention.
@@ -721,6 +734,10 @@ inline bool read_arch_geometry(const GgufFile& g, ArchGeometry& o, std::string& 
     opt_u("ssm.conv_kernel", o.ssm_d_conv);
     opt_u("ssm.inner_size", o.ssm_value_dim);
     opt_u("expert_count", o.n_expert);           // absent on a dense model -> stays 0
+    opt_u("rope.dimension_count", o.rope_dims);
+    o.has_gated_residual = spec->gated_residual;
+    o.has_sparse_indexer = spec->sparse_indexer;
+    o.has_ple           = spec->ple;
 
     o.n_layers = o.block_count - o.nextn;
     if (o.n_layers <= 0) { err = "block_count (" + std::to_string(o.block_count) + ") - nextn_predict_layers (" +
