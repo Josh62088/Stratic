@@ -61,3 +61,10 @@ build-vision-cuda12.bat
 
 /.ccache/
 /.rocm-win/
+
+# Rig run artefacts: engine logs, config backups and patch backups produced during measurement.
+# The engine writes strata-<model>.log next to its config, and a config edit leaves a .bak behind.
+strata-*.log*
+strata-*.json.bak*
+*.ops-review-backup
+*.prev-*

@@ -222,10 +222,21 @@ def tensor_bytes(mm, g, t) -> np.ndarray:
 def is_expert(name: str) -> bool:
     # `_exps.weight` is the MoE model's routed experts.  A DENSE model has no such tensor: its
     # feed-forward is `blk.N.ffn_{gate,up,down}.weight`, which `expert_layout()` serves through the
-    # same one-expert table (see the DENSE MODEL branch there).  Those three names do not exist in
-    # the 125B -- its FFN is `_exps` plus `_shexp` -- so matching them here is safe.
-    return name.startswith("blk.") and name.endswith(("_exps.weight", "ffn_gate.weight",
-                                                      "ffn_up.weight", "ffn_down.weight"))
+    # same one-expert table (see the DENSE MODEL branch there).
+    #
+    # FIX (ops-review): the original suffix test also matched the 125B's hyper-connection tensors --
+    # "blk.N.hc_ffn_up.weight".endswith("ffn_up.weight") is True -- so hc_ffn_up/hc_ffn_down were sent
+    # down the expert path and never written to the pack, and the engine then failed with
+    # "blk.0.hc_ffn_up.weight is missing".  Requiring the segment before ".weight" to be exactly the
+    # FFN role rejects hc_ffn_* while keeping MoE experts (which end in "_exps.weight") and genuine
+    # dense FFNs.  The v0.1.42 tag's predicate did not have this problem.
+    if not name.startswith("blk."):
+        return False
+    if name.endswith("_exps.weight"):
+        return True
+    head, _, tail = name.rpartition(".")
+    # head is like "blk.0.ffn_up" or "blk.0.hc_ffn_up"; require the last dot-segment to be the role
+    return tail == "weight" and head.rpartition(".")[2] in ("ffn_gate", "ffn_up", "ffn_down")
 
 
 def convert(name: str, type_name: str, raw: np.ndarray, compat_bf16: bool):
