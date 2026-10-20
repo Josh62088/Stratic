@@ -1,0 +1,26 @@
+{
+ "control": {
+  "ok": true,
+  "s": 1.13,
+  "prompt": 55,
+  "completion": 30
+ },
+ "400 tok": {
+  "ok": true,
+  "s": 1.75,
+  "prompt": 402,
+  "completion": 48
+ },
+ "1000 tok": {
+  "ok": true,
+  "s": 1.85,
+  "prompt": 878,
+  "completion": 48
+ },
+ "2000 tok": {
+  "ok": true,
+  "s": 3.03,
+  "prompt": 1694,
+  "completion": 48
+ }
+}

@@ -1,0 +1,28 @@
+[
+ {
+  "trial": "B-mmap-128gb",
+  "up": true,
+  "mode": "",
+  "control_ok": true,
+  "big_ok": false,
+  "big_prompt": null,
+  "big_completion": null,
+  "big_s": 1.43,
+  "err": "HTTP Error 503: Service Unavailable",
+  "crashes": "0",
+  "vram": "10 MiB"
+ },
+ {
+  "trial": "C-resident-tailskip-off",
+  "up": true,
+  "mode": "",
+  "control_ok": true,
+  "big_ok": false,
+  "big_prompt": null,
+  "big_completion": null,
+  "big_s": 6.31,
+  "err": "HTTP Error 503: Service Unavailable",
+  "crashes": "0",
+  "vram": "10 MiB"
+ }
+]

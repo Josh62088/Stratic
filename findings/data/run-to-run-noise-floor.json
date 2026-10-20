@@ -1,0 +1,56 @@
+{
+  "pass1": [
+    {
+      "depth": 2048,
+      "reused": 0,
+      "decode": 31.2,
+      "prefill": 200.3
+    },
+    {
+      "depth": 16384,
+      "reused": 0,
+      "decode": 41.4,
+      "prefill": 1173.8
+    },
+    {
+      "depth": 65536,
+      "reused": 0,
+      "decode": 41.4,
+      "prefill": 1196.4
+    },
+    {
+      "depth": 131072,
+      "reused": 0,
+      "decode": 44.8,
+      "prefill": 1166.3
+    }
+  ],
+  "pass2": [
+    {
+      "depth": 2048,
+      "reused": 0,
+      "decode": 50.3,
+      "prefill": 471.5
+    },
+    {
+      "depth": 16384,
+      "reused": 0,
+      "decode": 47.9,
+      "prefill": 1191.5
+    },
+    {
+      "depth": 65536,
+      "reused": 0,
+      "decode": 41.0,
+      "prefill": 1197.1
+    },
+    {
+      "depth": 131072,
+      "reused": 0,
+      "decode": 41.7,
+      "prefill": 1165.6
+    }
+  ],
+  "mean1": 39.699999999999996,
+  "mean2": 45.225
+}

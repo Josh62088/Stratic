@@ -1,0 +1,22 @@
+{
+ "arm": "1",
+ "ram_gb": 32,
+ "memory_mts": 2133,
+ "cpu": "Ryzen 5 5500",
+ "bios": "F4c",
+ "mode": "low-RAM (--mmap-experts)",
+ "context": 32768,
+ "kv": "int8",
+ "reasoning_budget_tokens": 16,
+ "note": "FLOOR, not a ceiling: 36 GB of experts against 31 GiB of RAM means experts are read from NVMe per token; the engine also hit a CUDA illegal-memory-access fault after repeated requests",
+ "results": [
+  {
+   "label": "SHORT prompt, modest answer (disjoint tag alpha)",
+   "error": "HTTP 503"
+  },
+  {
+   "label": "LONG prompt ~16k (disjoint tag beta)",
+   "error": "HTTP 503"
+  }
+ ]
+}

@@ -1,0 +1,78 @@
+{
+ "config": {
+  "engine": "0.1.42 cu13",
+  "expert_mode": "resident",
+  "context": 131072,
+  "kv_resident": 32768,
+  "vram_reserve_mib": 2048,
+  "gpu": 2,
+  "cpu": "Ryzen 9 5900XT",
+  "ram": "128 GB DDR4-3600"
+ },
+ "depths": [
+  {
+   "label": "2k",
+   "prompt_tokens": 1286,
+   "cold_s": 3.003,
+   "warm_s": 3.166,
+   "prefill_s": 2.21,
+   "prefill_tok_s": 581.5,
+   "decode_tok_s": 80.86,
+   "cache": "strata serve: decode expert cache hit rate: 93.0% (126507 hits / 136002 lookups); 159 more read by the GPU over PCIe or from another GPU (0.1% of all 136161 routed)",
+   "vram": [
+    2,
+    2,
+    14204
+   ]
+  },
+  {
+   "label": "16k",
+   "prompt_tokens": 9786,
+   "cold_s": 8.818,
+   "warm_s": 3.263,
+   "prefill_s": 8.0,
+   "prefill_tok_s": 1222.9,
+   "decode_tok_s": 78.46,
+   "cache": "strata serve: decode expert cache hit rate: 92.4% (126051 hits / 136376 lookups); 206 more read by the GPU over PCIe or from another GPU (0.2% of all 136582 routed)",
+   "vram": [
+    2,
+    2,
+    14204
+   ]
+  },
+  {
+   "label": "64k",
+   "prompt_tokens": 38924,
+   "cold_s": 26.605,
+   "warm_s": 3.639,
+   "prefill_s": 25.7,
+   "prefill_tok_s": 1514.8,
+   "decode_tok_s": 70.35,
+   "cache": "strata serve: decode expert cache hit rate: 93.5% (133074 hits / 142350 lookups); 129 more read by the GPU over PCIe or from another GPU (0.1% of all 142479 routed)",
+   "vram": [
+    2,
+    2,
+    14204
+   ]
+  },
+  {
+   "label": "128k",
+   "prompt_tokens": 77786,
+   "cold_s": 32.265,
+   "warm_s": 3.244,
+   "prefill_s": 31.45,
+   "prefill_tok_s": 2473.0,
+   "decode_tok_s": 78.91,
+   "cache": "strata serve: decode expert cache hit rate: 93.6% (125448 hits / 134076 lookups); 120 more read by the GPU over PCIe or from another GPU (0.1% of all 134196 routed)",
+   "vram": [
+    2,
+    2,
+    14204
+   ]
+  }
+ ],
+ "stability": {
+  "succeeded": 10,
+  "attempted": 10
+ }
+}

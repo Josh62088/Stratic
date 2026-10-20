@@ -1,0 +1,104 @@
+{
+  "anchor": "IQ2_XS 77.1 at 2.06 bpw, fully resident",
+  "prediction_law": "tok/s x bpw = 158.8 (valid within a mechanism, not across mechanisms)",
+  "quants": [
+    {
+      "quant": "IQ2_XS",
+      "bpw": 2.06,
+      "decode_mean": 77.1,
+      "mechanism": "resident 28.9 GiB",
+      "source": "measured, anchor",
+      "detail": {}
+    },
+    {
+      "quant": "IQ3_XXS",
+      "bpw": 3.06,
+      "decode_mean": 73.0,
+      "mechanism": "file-backed + 7.7 GiB VRAM cache, model on SATA HDD",
+      "source": "this session",
+      "detail": {
+        "decode": [
+          65.3,
+          68.0,
+          77.2,
+          81.5
+        ],
+        "cold": true,
+        "depths": [
+          2048,
+          16384,
+          65536,
+          131072
+        ]
+      }
+    },
+    {
+      "quant": "Q2_0",
+      "bpw": 2.19,
+      "decode_mean": 69.8,
+      "mechanism": "resident ~32 GiB",
+      "source": "this session",
+      "detail": {
+        "decode": [
+          64.3,
+          62.2,
+          79.9,
+          72.6
+        ],
+        "cold": true,
+        "depths": [
+          2048,
+          16384,
+          65536,
+          131072
+        ]
+      }
+    },
+    {
+      "quant": "IQ3_S",
+      "bpw": 3.44,
+      "decode_mean": 60.5,
+      "mechanism": "resident ~47 GiB",
+      "source": "this session",
+      "detail": {
+        "decode": [
+          52.9,
+          59.0,
+          63.1,
+          66.8
+        ],
+        "cold": true,
+        "depths": [
+          2048,
+          16384,
+          65536,
+          131072
+        ]
+      }
+    },
+    {
+      "quant": "UD-IQ4_XS",
+      "bpw": 4.19,
+      "decode_mean": 43.3,
+      "mechanism": "file-backed, expert cache 55 GiB of 60 GB, NVMe",
+      "source": "this session",
+      "detail": {
+        "decode": [
+          36.6,
+          45.0,
+          40.7,
+          50.8,
+          43.3
+        ],
+        "cold": true,
+        "depths": [
+          2048,
+          16384,
+          65536,
+          131072,
+          262144
+        ]
+      }
+    }
+  ]
+}

@@ -1,0 +1,756 @@
+{
+  "Q2_0": {
+    "bpw": 2.19,
+    "model_id": "qwen3.8-flash-next-q2_0",
+    "n_ctx": 131072,
+    "load_min": 10.2,
+    "cache": "expert cache 6407 slots, 8.25 GiB of VRAM",
+    "vram_free": "strata serve: 1714 MiB of VRAM free with everything loaded",
+    "per_depth": {
+      "2048": {
+        "median": 91.6,
+        "n": 3,
+        "spread": 5.7,
+        "values": [
+          91.6,
+          90.2,
+          95.9
+        ]
+      },
+      "16384": {
+        "median": 91.9,
+        "n": 3,
+        "spread": 4.3,
+        "values": [
+          89.7,
+          91.9,
+          94.0
+        ]
+      },
+      "65536": {
+        "median": 89.3,
+        "n": 3,
+        "spread": 2.4,
+        "values": [
+          88.7,
+          89.3,
+          91.1
+        ]
+      },
+      "131072": {
+        "median": 85.5,
+        "n": 3,
+        "spread": 4.7,
+        "values": [
+          85.5,
+          84.6,
+          89.3
+        ]
+      }
+    },
+    "mean_of_medians": 89.575,
+    "worst_spread": 5.7,
+    "all_cold": true,
+    "raw": [
+      {
+        "depth": 2048,
+        "ok": true,
+        "wall_s": 114.4,
+        "prompt_tokens": 2053,
+        "reused": 0,
+        "prefill": 810.5,
+        "generated": 1400,
+        "decode": 91.6
+      },
+      {
+        "depth": 131072,
+        "ok": true,
+        "wall_s": 115.2,
+        "prompt_tokens": 126300,
+        "reused": 0,
+        "prefill": 1494.2,
+        "generated": 1400,
+        "decode": 85.5
+      },
+      {
+        "depth": 16384,
+        "ok": true,
+        "wall_s": 48.7,
+        "prompt_tokens": 15858,
+        "reused": 0,
+        "prefill": 1561.6,
+        "generated": 1400,
+        "decode": 89.7
+      },
+      {
+        "depth": 65536,
+        "ok": true,
+        "wall_s": 109.8,
+        "prompt_tokens": 63190,
+        "reused": 0,
+        "prefill": 1552.0,
+        "generated": 1400,
+        "decode": 88.7
+      },
+      {
+        "depth": 131072,
+        "ok": true,
+        "wall_s": 124.0,
+        "prompt_tokens": 126300,
+        "reused": 0,
+        "prefill": 1496.5,
+        "generated": 1400,
+        "decode": 84.6
+      },
+      {
+        "depth": 2048,
+        "ok": true,
+        "wall_s": 71.3,
+        "prompt_tokens": 2053,
+        "reused": 0,
+        "prefill": 805.1,
+        "generated": 1400,
+        "decode": 90.2
+      },
+      {
+        "depth": 16384,
+        "ok": true,
+        "wall_s": 122.2,
+        "prompt_tokens": 15858,
+        "reused": 0,
+        "prefill": 1560.0,
+        "generated": 1400,
+        "decode": 91.9
+      },
+      {
+        "depth": 65536,
+        "ok": true,
+        "wall_s": 71.9,
+        "prompt_tokens": 63190,
+        "reused": 0,
+        "prefill": 1551.4,
+        "generated": 1400,
+        "decode": 89.3
+      },
+      {
+        "depth": 131072,
+        "ok": true,
+        "wall_s": 197.1,
+        "prompt_tokens": 126300,
+        "reused": 0,
+        "prefill": 1499.1,
+        "generated": 1400,
+        "decode": 89.3
+      },
+      {
+        "depth": 65536,
+        "ok": true,
+        "wall_s": 109.5,
+        "prompt_tokens": 63190,
+        "reused": 0,
+        "prefill": 1553.6,
+        "generated": 1400,
+        "decode": 91.1
+      },
+      {
+        "depth": 2048,
+        "ok": true,
+        "wall_s": 40.1,
+        "prompt_tokens": 2053,
+        "reused": 0,
+        "prefill": 794.1,
+        "generated": 1400,
+        "decode": 95.9
+      },
+      {
+        "depth": 16384,
+        "ok": false,
+        "wall_s": 17.5,
+        "prompt_tokens": 2053,
+        "reused": 0,
+        "prefill": 815.1,
+        "generated": 1400,
+        "decode": 94.0
+      }
+    ]
+  },
+  "IQ3_XXS": {
+    "bpw": 3.06,
+    "model_id": "qwen3.8-flash-next-iq3_xxs",
+    "cache": "expert cache 4748 slots, 7.70 GiB of VRAM",
+    "vram_free": "strata serve: 1752 MiB of VRAM free with everything loaded",
+    "per_depth": {
+      "2048": {
+        "median": 85.5,
+        "n": 3,
+        "spread": 3.3,
+        "values": [
+          83.9,
+          85.5,
+          87.2
+        ]
+      },
+      "16384": {
+        "median": 85.3,
+        "n": 3,
+        "spread": 1.4,
+        "values": [
+          86.2,
+          85.3,
+          84.8
+        ]
+      },
+      "65536": {
+        "median": 81.2,
+        "n": 3,
+        "spread": 2.7,
+        "values": [
+          80.2,
+          81.2,
+          82.9
+        ]
+      },
+      "131072": {
+        "median": 82.5,
+        "n": 3,
+        "spread": 5.4,
+        "values": [
+          77.3,
+          82.7,
+          82.5
+        ]
+      }
+    },
+    "mean_of_medians": 83.625,
+    "worst_spread": 5.4,
+    "ok_rate": "12/12",
+    "all_cold": true,
+    "raw": [
+      {
+        "depth": 65536,
+        "ok": true,
+        "prompt_tokens": 63190,
+        "reused": 0,
+        "prefill": 1627.0,
+        "generated": 1400,
+        "decode": 80.2
+      },
+      {
+        "depth": 131072,
+        "ok": true,
+        "prompt_tokens": 126300,
+        "reused": 0,
+        "prefill": 1544.4,
+        "generated": 1400,
+        "decode": 77.3
+      },
+      {
+        "depth": 2048,
+        "ok": true,
+        "prompt_tokens": 2053,
+        "reused": 0,
+        "prefill": 690.4,
+        "generated": 1400,
+        "decode": 83.9
+      },
+      {
+        "depth": 16384,
+        "ok": true,
+        "prompt_tokens": 15858,
+        "reused": 0,
+        "prefill": 1625.4,
+        "generated": 1400,
+        "decode": 86.2
+      },
+      {
+        "depth": 16384,
+        "ok": true,
+        "prompt_tokens": 15858,
+        "reused": 0,
+        "prefill": 1609.2,
+        "generated": 1400,
+        "decode": 85.3
+      },
+      {
+        "depth": 131072,
+        "ok": true,
+        "prompt_tokens": 126300,
+        "reused": 0,
+        "prefill": 1556.0,
+        "generated": 1400,
+        "decode": 82.7
+      },
+      {
+        "depth": 2048,
+        "ok": true,
+        "prompt_tokens": 2053,
+        "reused": 0,
+        "prefill": 692.7,
+        "generated": 1400,
+        "decode": 85.5
+      },
+      {
+        "depth": 65536,
+        "ok": true,
+        "prompt_tokens": 63190,
+        "reused": 0,
+        "prefill": 1601.9,
+        "generated": 1400,
+        "decode": 81.2
+      },
+      {
+        "depth": 65536,
+        "ok": true,
+        "prompt_tokens": 63190,
+        "reused": 0,
+        "prefill": 1604.7,
+        "generated": 1400,
+        "decode": 82.9
+      },
+      {
+        "depth": 131072,
+        "ok": true,
+        "prompt_tokens": 126300,
+        "reused": 0,
+        "prefill": 1549.3,
+        "generated": 1400,
+        "decode": 82.5
+      },
+      {
+        "depth": 2048,
+        "ok": true,
+        "prompt_tokens": 2053,
+        "reused": 0,
+        "prefill": 689.0,
+        "generated": 1400,
+        "decode": 87.2
+      },
+      {
+        "depth": 16384,
+        "ok": true,
+        "prompt_tokens": 15858,
+        "reused": 0,
+        "prefill": 1630.8,
+        "generated": 1400,
+        "decode": 84.8
+      }
+    ]
+  },
+  "IQ3_S": {
+    "bpw": 3.44,
+    "model_id": "qwen3.8-flash-next-iq3_s",
+    "cache": "expert cache 3995 slots, 7.62 GiB of VRAM",
+    "vram_free": "strata serve: 1444 MiB of VRAM free with everything loaded",
+    "per_depth": {
+      "2048": {
+        "median": 71.9,
+        "n": 3,
+        "spread": 1.3,
+        "values": [
+          71.9,
+          73.1,
+          71.8
+        ]
+      },
+      "16384": {
+        "median": 70.8,
+        "n": 3,
+        "spread": 3.4,
+        "values": [
+          70.8,
+          70.1,
+          73.5
+        ]
+      },
+      "65536": {
+        "median": 69.8,
+        "n": 3,
+        "spread": 1.8,
+        "values": [
+          69.8,
+          69.4,
+          71.2
+        ]
+      },
+      "131072": {
+        "median": 69.6,
+        "n": 3,
+        "spread": 1.0,
+        "values": [
+          70.5,
+          69.5,
+          69.6
+        ]
+      }
+    },
+    "mean_of_medians": 70.525,
+    "worst_spread": 3.4,
+    "ok_rate": "12/12",
+    "all_cold": true,
+    "expert_cache": "3800",
+    "raw": [
+      {
+        "depth": 2048,
+        "ok": true,
+        "reused": 0,
+        "prefill": 576.8,
+        "decode": 71.9
+      },
+      {
+        "depth": 65536,
+        "ok": true,
+        "reused": 0,
+        "prefill": 1301.6,
+        "decode": 69.8
+      },
+      {
+        "depth": 131072,
+        "ok": true,
+        "reused": 0,
+        "prefill": 1264.7,
+        "decode": 70.5
+      },
+      {
+        "depth": 16384,
+        "ok": true,
+        "reused": 0,
+        "prefill": 1301.0,
+        "decode": 70.8
+      },
+      {
+        "depth": 131072,
+        "ok": true,
+        "reused": 0,
+        "prefill": 1259.8,
+        "decode": 69.5
+      },
+      {
+        "depth": 16384,
+        "ok": true,
+        "reused": 0,
+        "prefill": 1302.4,
+        "decode": 70.1
+      },
+      {
+        "depth": 2048,
+        "ok": true,
+        "reused": 0,
+        "prefill": 569.1,
+        "decode": 73.1
+      },
+      {
+        "depth": 65536,
+        "ok": true,
+        "reused": 0,
+        "prefill": 1297.9,
+        "decode": 69.4
+      },
+      {
+        "depth": 16384,
+        "ok": true,
+        "reused": 0,
+        "prefill": 1309.9,
+        "decode": 73.5
+      },
+      {
+        "depth": 2048,
+        "ok": true,
+        "reused": 0,
+        "prefill": 567.7,
+        "decode": 71.8
+      },
+      {
+        "depth": 131072,
+        "ok": true,
+        "reused": 0,
+        "prefill": 1263.3,
+        "decode": 69.6
+      },
+      {
+        "depth": 65536,
+        "ok": true,
+        "reused": 0,
+        "prefill": 1304.2,
+        "decode": 71.2
+      }
+    ]
+  },
+  "UD-IQ4_XS": {
+    "bpw": 4.19,
+    "model_id": "qwen3.8-flash-next-unsloth-ud-iq4_xs",
+    "cache": "expert cache 3033 slots, 6.83 GiB of VRAM",
+    "vram_free": "strata serve: 1418 MiB of VRAM free with everything loaded",
+    "per_depth": {
+      "2048": {
+        "median": 50.9,
+        "n": 3,
+        "spread": 4.0,
+        "values": [
+          50.9,
+          54.7,
+          50.7
+        ]
+      },
+      "16384": {
+        "median": 52.9,
+        "n": 3,
+        "spread": 1.3,
+        "values": [
+          53.2,
+          52.9,
+          51.9
+        ]
+      },
+      "65536": {
+        "median": 52.6,
+        "n": 3,
+        "spread": 1.1,
+        "values": [
+          52.6,
+          53.0,
+          51.9
+        ]
+      },
+      "131072": {
+        "median": 51.2,
+        "n": 3,
+        "spread": 1.2,
+        "values": [
+          50.8,
+          51.2,
+          52.0
+        ]
+      }
+    },
+    "mean_of_medians": 51.9,
+    "worst_spread": 4.0,
+    "ok_rate": "12/12",
+    "all_cold": true,
+    "expert_cache": "2800",
+    "raw": [
+      {
+        "depth": 65536,
+        "ok": true,
+        "reused": 0,
+        "prefill": 1197.4,
+        "decode": 52.6
+      },
+      {
+        "depth": 2048,
+        "ok": true,
+        "reused": 0,
+        "prefill": 474.7,
+        "decode": 50.9
+      },
+      {
+        "depth": 131072,
+        "ok": true,
+        "reused": 0,
+        "prefill": 1166.7,
+        "decode": 50.8
+      },
+      {
+        "depth": 16384,
+        "ok": true,
+        "reused": 0,
+        "prefill": 1181.2,
+        "decode": 53.2
+      },
+      {
+        "depth": 131072,
+        "ok": true,
+        "reused": 0,
+        "prefill": 1168.1,
+        "decode": 51.2
+      },
+      {
+        "depth": 16384,
+        "ok": true,
+        "reused": 0,
+        "prefill": 1187.2,
+        "decode": 52.9
+      },
+      {
+        "depth": 65536,
+        "ok": true,
+        "reused": 0,
+        "prefill": 1192.5,
+        "decode": 53.0
+      },
+      {
+        "depth": 2048,
+        "ok": true,
+        "reused": 0,
+        "prefill": 469.7,
+        "decode": 54.7
+      },
+      {
+        "depth": 65536,
+        "ok": true,
+        "reused": 0,
+        "prefill": 1197.5,
+        "decode": 51.9
+      },
+      {
+        "depth": 16384,
+        "ok": true,
+        "reused": 0,
+        "prefill": 1179.1,
+        "decode": 51.9
+      },
+      {
+        "depth": 2048,
+        "ok": true,
+        "reused": 0,
+        "prefill": 476.7,
+        "decode": 50.7
+      },
+      {
+        "depth": 131072,
+        "ok": true,
+        "reused": 0,
+        "prefill": 1169.5,
+        "decode": 52.0
+      }
+    ]
+  },
+  "IQ2_XS": {
+    "bpw": 2.06,
+    "model_id": "qwen3.8-flash-next-iq2_xs",
+    "cache": "expert cache 6297 slots, 8.44 GiB of VRAM",
+    "vram_free": "strata serve: 1582 MiB of VRAM free with everything loaded",
+    "per_depth": {
+      "2048": {
+        "median": 92.4,
+        "n": 3,
+        "spread": 3.8,
+        "values": [
+          92.4,
+          89.7,
+          93.5
+        ]
+      },
+      "16384": {
+        "median": 90.9,
+        "n": 3,
+        "spread": 1.3,
+        "values": [
+          90.9,
+          90.8,
+          92.1
+        ]
+      },
+      "65536": {
+        "median": 87.0,
+        "n": 3,
+        "spread": 4.2,
+        "values": [
+          89.3,
+          85.1,
+          87.0
+        ]
+      },
+      "131072": {
+        "median": 87.1,
+        "n": 3,
+        "spread": 0.4,
+        "values": [
+          86.8,
+          87.2,
+          87.1
+        ]
+      }
+    },
+    "mean_of_medians": 89.35,
+    "worst_spread": 4.2,
+    "ok_rate": "12/12",
+    "all_cold": true,
+    "expert_cache": "6000",
+    "raw": [
+      {
+        "depth": 16384,
+        "ok": true,
+        "reused": 0,
+        "prefill": 1516.1,
+        "decode": 90.9
+      },
+      {
+        "depth": 2048,
+        "ok": true,
+        "reused": 0,
+        "prefill": 759.0,
+        "decode": 92.4
+      },
+      {
+        "depth": 65536,
+        "ok": true,
+        "reused": 0,
+        "prefill": 1508.6,
+        "decode": 89.3
+      },
+      {
+        "depth": 131072,
+        "ok": true,
+        "reused": 0,
+        "prefill": 1454.3,
+        "decode": 86.8
+      },
+      {
+        "depth": 131072,
+        "ok": true,
+        "reused": 0,
+        "prefill": 1460.0,
+        "decode": 87.2
+      },
+      {
+        "depth": 65536,
+        "ok": true,
+        "reused": 0,
+        "prefill": 1502.0,
+        "decode": 85.1
+      },
+      {
+        "depth": 16384,
+        "ok": true,
+        "reused": 0,
+        "prefill": 1508.1,
+        "decode": 90.8
+      },
+      {
+        "depth": 2048,
+        "ok": true,
+        "reused": 0,
+        "prefill": 760.7,
+        "decode": 89.7
+      },
+      {
+        "depth": 65536,
+        "ok": true,
+        "reused": 0,
+        "prefill": 1505.1,
+        "decode": 87.0
+      },
+      {
+        "depth": 2048,
+        "ok": true,
+        "reused": 0,
+        "prefill": 759.3,
+        "decode": 93.5
+      },
+      {
+        "depth": 131072,
+        "ok": true,
+        "reused": 0,
+        "prefill": 1456.0,
+        "decode": 87.1
+      },
+      {
+        "depth": 16384,
+        "ok": true,
+        "reused": 0,
+        "prefill": 1504.0,
+        "decode": 92.1
+      }
+    ]
+  }
+}

@@ -1,0 +1,99 @@
+{
+ "arm": "B2-context-use",
+ "config": {
+  "gpus_visible": "3",
+  "vram_mib": "48933",
+  "ram": "31 GiB",
+  "boot": "2026-10-16 18:10:46"
+ },
+ "depths": [
+  {
+   "label": "8k  a large file or a short conversation",
+   "approx_tokens": 8000,
+   "num_ctx": 12096,
+   "cold": {
+    "prompt_tokens": 5720,
+    "prefill_s": 7.84,
+    "prefill_tok_s": 729.5,
+    "ttft_s": 26.795,
+    "decode_tok_s": 44.55,
+    "load_s": 18.91
+   },
+   "warm": {
+    "prompt_tokens": 5720,
+    "prefill_s": 0.48,
+    "prefill_tok_s": 11922.4,
+    "ttft_s": 0.812,
+    "decode_tok_s": 45.69,
+    "load_s": 0.31
+   },
+   "vram_mib": 18106
+  },
+  {
+   "label": "32k a module, or a long back-and-forth",
+   "approx_tokens": 32000,
+   "num_ctx": 36096,
+   "cold": {
+    "prompt_tokens": 22760,
+    "prefill_s": 32.39,
+    "prefill_tok_s": 702.7,
+    "ttft_s": 52.533,
+    "decode_tok_s": 43.15,
+    "load_s": 20.06
+   },
+   "warm": {
+    "prompt_tokens": 22760,
+    "prefill_s": 0.72,
+    "prefill_tok_s": 31769.8,
+    "ttft_s": 1.101,
+    "decode_tok_s": 45.8,
+    "load_s": 0.3
+   },
+   "vram_mib": 23024
+  },
+  {
+   "label": "64k a small repository, or a very long thread",
+   "approx_tokens": 64000,
+   "num_ctx": 68096,
+   "cold": {
+    "prompt_tokens": 45470,
+    "prefill_s": 73.07,
+    "prefill_tok_s": 622.3,
+    "ttft_s": 94.265,
+    "decode_tok_s": 38.21,
+    "load_s": 21.03
+   },
+   "warm": {
+    "prompt_tokens": 45470,
+    "prefill_s": 1.02,
+    "prefill_tok_s": 44779.3,
+    "ttft_s": 1.483,
+    "decode_tok_s": 39.89,
+    "load_s": 0.3
+   },
+   "vram_mib": 27154
+  },
+  {
+   "label": "128k a repository, or a whole day of conversation",
+   "approx_tokens": 128000,
+   "num_ctx": 132096,
+   "cold": {
+    "prompt_tokens": 90920,
+    "prefill_s": 167.67,
+    "prefill_tok_s": 542.3,
+    "ttft_s": 188.478,
+    "decode_tok_s": 32.58,
+    "load_s": 20.49
+   },
+   "warm": {
+    "prompt_tokens": 90920,
+    "prefill_s": 1.61,
+    "prefill_tok_s": 56524.5,
+    "ttft_s": 2.234,
+    "decode_tok_s": 33.16,
+    "load_s": 0.3
+   },
+   "vram_mib": 27026
+  }
+ ]
+}

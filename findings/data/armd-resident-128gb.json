@@ -1,0 +1,28 @@
+{
+ "arm": "D-resident-128gb",
+ "method": "two-point timing, non-streaming",
+ "depths": [
+  {
+   "label": "2k",
+   "approx": 2000,
+   "error": "HTTP Error 503: Service Unavailable"
+  }
+ ],
+ "stability": {
+  "succeeded": 10,
+  "attempted": 10
+ },
+ "config": {
+  "gpu": 2,
+  "context": 131072,
+  "cpu": "Ryzen 9 5900XT",
+  "ram": "128 GB DDR4-3600",
+  "vram_reserve_mib": 2048
+ },
+ "start_vram": [
+  2,
+  2,
+  14148
+ ],
+ "start_ram_avail": "87"
+}

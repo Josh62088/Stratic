@@ -1,0 +1,47 @@
+{
+  "warmup1": {
+    "depth": 2048,
+    "wall_s": 5.0,
+    "decode": 50.9,
+    "prefill": 473.1,
+    "reused": 0
+  },
+  "warmup2": {
+    "depth": 4096,
+    "wall_s": 5.7,
+    "decode": 56.6,
+    "prefill": 786.2,
+    "reused": 0
+  },
+  "results": [
+    {
+      "depth": 2048,
+      "wall_s": 5.3,
+      "decode": 52.6,
+      "prefill": 475.9,
+      "reused": 0
+    },
+    {
+      "depth": 16384,
+      "wall_s": 14.0,
+      "decode": 49.8,
+      "prefill": 1189.3,
+      "reused": 0
+    },
+    {
+      "depth": 65536,
+      "wall_s": 53.7,
+      "decode": 47.2,
+      "prefill": 1195.4,
+      "reused": 0
+    },
+    {
+      "depth": 131072,
+      "wall_s": 110.1,
+      "decode": 38.9,
+      "prefill": 1161.9,
+      "reused": 0
+    }
+  ],
+  "warmed_mean": 47.125
+}

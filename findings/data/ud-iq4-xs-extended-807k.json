@@ -1,0 +1,20 @@
+{
+  "depth_requested": 1048576,
+  "rope_scaling": "yarn",
+  "rope_scale": 4,
+  "wall_s": 952.3,
+  "prompt_tokens": 807866,
+  "completion_tokens": 49,
+  "ok": true,
+  "error": null,
+  "content_head": "READY",
+  "log_line": "strata serve: prompt 807866 tokens = 0 reused + 807866 read in 949040 ms (851.2 tok/s), 49 generated in 1723 ms (28.4 tok/s), drafts accepted 30 of 43, 6 checkpoints",
+  "prompt_tokens_engine": 807866,
+  "reused": 0,
+  "cold_read": 807866,
+  "prefill_ms": 949040,
+  "prefill_tok_s": 851.2,
+  "generated": 49,
+  "decode_ms": 1723,
+  "decode_tok_s": 28.4
+}

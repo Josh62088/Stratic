@@ -1,0 +1,61 @@
+{
+  "quant": "IQ3_S",
+  "bpw": 3.44,
+  "predicted_tok_s": 46.2,
+  "model_id": "qwen3.8-flash-next-iq3_s",
+  "n_ctx": 131072,
+  "load_min": 11.8,
+  "rss_gb": "73.8",
+  "max_context": 131072,
+  "rope_scaling": "none",
+  "results": [
+    {
+      "depth_requested": 2048,
+      "wall_s": 4.7,
+      "ok": true,
+      "error": null,
+      "log_line": "strata serve: prompt 2048 tokens = 0 reused + 2048 read in 3708 ms (552.4 tok/s), 53 generated in 1001 ms (52.9 tok/s), drafts accepted 36 of 41, 1 checkpoints",
+      "prompt_tokens_engine": 2048,
+      "reused": 0,
+      "cold_read": 2048,
+      "prefill_tok_s": 552.4,
+      "decode_tok_s": 52.9
+    },
+    {
+      "depth_requested": 16384,
+      "wall_s": 12.8,
+      "ok": true,
+      "error": null,
+      "log_line": "strata serve: prompt 15854 tokens = 0 reused + 15854 read in 12108 ms (1309.4 tok/s), 37 generated in 627 ms (59.0 tok/s), drafts accepted 24 of 32, 1 checkpoints",
+      "prompt_tokens_engine": 15854,
+      "reused": 0,
+      "cold_read": 15854,
+      "prefill_tok_s": 1309.4,
+      "decode_tok_s": 59.0
+    },
+    {
+      "depth_requested": 65536,
+      "wall_s": 49.1,
+      "ok": true,
+      "error": null,
+      "log_line": "strata serve: prompt 63183 tokens = 0 reused + 63183 read in 48465 ms (1303.7 tok/s), 37 generated in 586 ms (63.1 tok/s), drafts accepted 24 of 31, 4 checkpoints",
+      "prompt_tokens_engine": 63183,
+      "reused": 0,
+      "cold_read": 63183,
+      "prefill_tok_s": 1303.7,
+      "decode_tok_s": 63.1
+    },
+    {
+      "depth_requested": 131072,
+      "wall_s": 100.7,
+      "ok": true,
+      "error": null,
+      "log_line": "strata serve: prompt 126294 tokens = 0 reused + 126294 read in 100081 ms (1261.9 tok/s), 37 generated in 554 ms (66.8 tok/s), drafts accepted 23 of 30, 6 checkpoints",
+      "prompt_tokens_engine": 126294,
+      "reused": 0,
+      "cold_read": 126294,
+      "prefill_tok_s": 1261.9,
+      "decode_tok_s": 66.8
+    }
+  ]
+}

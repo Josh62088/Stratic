@@ -1,0 +1,37 @@
+{
+ "arm": "C-3card-3200-working-set",
+ "config": {
+  "boot": "2026-10-16 18:49:14",
+  "gpus": "3",
+  "vram_mib": "48933",
+  "ram": "31 GiB"
+ },
+ "cold": {
+  "prompt_tokens": 72884,
+  "prefill_s": 125.06,
+  "prefill_tok_s": 582.8,
+  "ttft_s": 145.581,
+  "decode_tok_s": 31.41,
+  "wall_s": 146.88,
+  "vram_per_card_mib": [
+   8462,
+   8380,
+   10098
+  ],
+  "vram_total_mib": 26940
+ },
+ "warm": {
+  "prompt_tokens": 72884,
+  "prefill_s": 1.36,
+  "prefill_tok_s": 53777.3,
+  "ttft_s": 1.88,
+  "decode_tok_s": 32.25,
+  "wall_s": 3.15,
+  "vram_per_card_mib": [
+   8462,
+   8380,
+   10098
+  ],
+  "vram_total_mib": 26940
+ }
+}
