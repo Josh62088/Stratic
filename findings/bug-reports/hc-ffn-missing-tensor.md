@@ -69,3 +69,23 @@ point may not agree with a pack generated from it.
 `setup.py` could not install a prebuilt engine for v0.1.42 (`releases/latest/download` returns 404), so it
 fell back to compiling, which needs the CUDA 13 toolkit via `apt`/`sudo`. The engine used here is a
 locally built sm_120 engine from the same checkout.
+
+---
+
+## Root cause, established after the fix
+
+**This is a regression in `stratic-qwen35-adapter`, not an upstream fault.** Checking the predicate across
+refs:
+
+| ref | `is_expert()` predicate |
+|---|---|
+| `v0.1.41`, `v0.1.42`, `v0.1.45`, `origin/main` | `endswith(("_exps.weight",))` |
+| this branch before the fix | `endswith(("_exps.weight", "ffn_gate.weight", "ffn_up.weight", "ffn_down.weight"))` |
+
+The widened form exists only in the six commits that make up this branch. Every released tag, and `main`,
+already avoid the bug because they never match the `ffn_*` suffixes at all.
+
+So there is no upstream PR to open. The fix in this fork restores correct behaviour for this branch and
+additionally keeps genuine dense-model FFN tensors on the expert path, which the narrow upstream predicate
+does not. Anyone tracking upstream should know the engine itself is fine — the fault is in this branch's
+packer predicate.
